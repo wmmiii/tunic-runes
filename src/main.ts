@@ -1,4 +1,4 @@
-import { CC, encodedLine, Glyph, hitTarget, Point } from "./glyph";
+import { encodedLine, Glyph, hitTarget, Point } from "./glyph";
 import { drawTemplate, highlightTarget, strokeGlyph } from "./glyph-renderer";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
