@@ -83,7 +83,7 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
 
     // Handle DOT target
     if (target === DOT) {
-      setGlyph(prev => prev ^ (2 ** 12));
+      setGlyph(prev => prev ^ (2 ** 5));
     }
 
     setMouseDown(true);

@@ -39,7 +39,6 @@ export const DOT_TARGET: Point = {x: 128, y: BB.y + HIT_RADIUS * 2};
 
 // Lines
 export const OTR = [TT, TR];
-export const OR = [TR, CR, BTR, BR];
 export const OBR = [BR, BB];
 export const OBL = [BL, BB];
 export const OL = [BL, BTL, CL, TL];
@@ -47,7 +46,7 @@ export const OTL = [TL, TT];
 export const IT = [TT, TC, TC, CC];
 export const ITR = [TR, TC];
 export const IBR = [BR, BC];
-export const IB = [BB, BC];
+export const IB = [BB, BC, TC, CC];
 export const IBL = [BL, BC];
 export const ITL = [TL, TC];
 
@@ -87,12 +86,12 @@ export function encodedLine(a: Point, b: Point) {
   };
 
   // Map to strokeGlyph bit positions
-  if (matches(a, b, [TT, TR])) return 2 ** 0;
-  if (matches(a, b, [TR, BR])) return 2 ** 1;
-  if (matches(a, b, [BR, BB])) return 2 ** 2;
-  if (matches(a, b, [BL, BB])) return 2 ** 3;
-  if (matches(a, b, [BL, TL])) return 2 ** 4;
-  if (matches(a, b, [TL, TT])) return 2 ** 5;
+  if (matches(a, b, [BR, BB])) return 2 ** 0;
+  if (matches(a, b, [BL, BB])) return 2 ** 1;
+  if (matches(a, b, [BL, TL])) return 2 ** 2;
+  if (matches(a, b, [TL, TT])) return 2 ** 3;
+  if (matches(a, b, [TT, TR])) return 2 ** 4;
+  // 2 ** 5 is dot
   if (matches(a, b, [TT, CC])) return 2 ** 6;
   if (matches(a, b, [TR, CC])) return 2 ** 7;
   if (matches(a, b, [BR, CC])) return 2 ** 8;

@@ -3,7 +3,7 @@ import {
   Point,
   TT, TL, TR, TC,
   BC, BL, BR, BB,
-  OTR, OR, OBR, OBL, OL, OTL,
+  OTR, OBR, OBL, OL, OTL,
   IT, ITR, IBR, IB, IBL, ITL,
   HIT_RADIUS,
   CC,
@@ -17,23 +17,26 @@ import { colors, lineWidth, opacity } from "./theme";
 
 export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 0) {
-    strokeLine(ctx, OTR);
-  };
-  if (glyph & 2 ** 1) {
-    strokeLine(ctx, OR);
-  };
-  if (glyph & 2 ** 2) {
     strokeLine(ctx, OBR);
   };
-  if (glyph & 2 ** 3) {
+  if (glyph & 2 ** 1) {
     strokeLine(ctx, OBL);
   };
-  if (glyph & 2 ** 4) {
+  if (glyph & 2 ** 2) {
     strokeLine(ctx, OL);
   };
-  if (glyph & 2 ** 5) {
+  if (glyph & 2 ** 3) {
     strokeLine(ctx, OTL);
   };
+  if (glyph & 2 ** 4) {
+    strokeLine(ctx, OTR);
+  };
+
+  if (glyph & 2 ** 5) {
+    strokeDot(ctx);
+  };
+
+
   if (glyph & 2 ** 6) {
     strokeLine(ctx, IT);
   };
@@ -52,9 +55,6 @@ export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 11) {
     strokeLine(ctx, ITL);
   };
-  if (glyph & 2 ** 12) {
-    strokeDot(ctx);
-  };
   strokeGuide(ctx);
 }
 
@@ -63,7 +63,6 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   ctx.lineWidth = lineWidth.template;
   ctx.lineCap = 'round';
   strokeLine(ctx, OTR);
-  strokeLine(ctx, OR);
   strokeLine(ctx, OBR);
   strokeLine(ctx, OBL);
   strokeLine(ctx, OL);
