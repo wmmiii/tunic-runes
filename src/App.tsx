@@ -81,7 +81,7 @@ function App() {
         </div>
         <div ref={sequenceContainerRef} className={styles.sequenceContainer}>
           {sequenceWidth > 0 && (
-            <GlyphSequence glyphs={glyphSequence} scale={0.18} width={sequenceWidth} height={120} />
+            <GlyphSequence glyphs={glyphSequence} previewGlyph={currentGlyph} scale={0.18} width={sequenceWidth} height={120} />
           )}
         </div>
       </main>

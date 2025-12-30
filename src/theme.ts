@@ -7,6 +7,7 @@ export const colors = {
   // Canvas/Glyph colors
   glyphActive: '#5C4A2F',
   glyphSequence: '#8B6F47',
+  glyphPreview: '#8B6F4744',
   glyphTemplate: '#D4CCBE',
   glyphHighlight: '#D9A865',
 } as const;
