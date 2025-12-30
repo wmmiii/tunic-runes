@@ -7,6 +7,9 @@ interface GlyphEditorProps {
   className: string;
 }
 
+const CANVAS_WIDTH = 256;
+const CANVAS_HEIGHT = 360;
+
 export function GlyphEditor({ className }: GlyphEditorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [glyph, setGlyph] = useState<Glyph>(0);
@@ -27,7 +30,7 @@ export function GlyphEditor({ className }: GlyphEditorProps) {
 
     ctx.reset();
     ctx.setTransform(scale, 0, 0, scale, 64, 64);
-    ctx.clearRect(0, 0, 256, 512);
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     drawTemplate(ctx);
 
     ctx.lineWidth = 24;
@@ -74,8 +77,9 @@ export function GlyphEditor({ className }: GlyphEditorProps) {
     <canvas
       ref={canvasRef}
       className={`${styles.canvas} ${className}`}
-      width={256}
-      height={512}
+      width={CANVAS_WIDTH}
+      height={CANVAS_HEIGHT}
+      style={{ width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT}px` }}
       onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
       onMouseDown={() => setMouseDown(true)}
       onMouseUp={handleEnd}
