@@ -2,7 +2,6 @@ import {
   Glyph,
   Point,
   TT, TL, TR, TC,
-  CL, CR,
   BC, BL, BR, BB,
   OTR, OR, OBR, OBL, OL, OTL,
   IT, ITR, IBR, IB, IBL, ITL,

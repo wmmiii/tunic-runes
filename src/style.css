@@ -12,9 +12,3 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-#canvas {
-  display: block;
-  width: 256px;
-  height: 512px;
-}
