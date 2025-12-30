@@ -1,5 +1,9 @@
 export type Glyph = number;
 
+// Draw targets
+export const HIT_RADIUS = 48;
+export const DOT_HIT_RADIUS = HIT_RADIUS * 0.75;
+
 // Special glyph values
 export const SPACE = 0;
 
@@ -29,6 +33,10 @@ export const BL: Point = { x: 0, y: BC.y + TC.y - TL.y };
 export const BR: Point = { x: 256, y: BC.y + TC.y - TR.y };
 export const BB: Point = { x: 128, y: BC.y + TC.y - TT.y };
 
+// Dot
+export const DOT: Point = { x: 128, y: 415 };
+export const DOT_TARGET: Point = {x: 128, y: BB.y + HIT_RADIUS * 2};
+
 // Lines
 export const OTR = [TT, TR];
 export const OR = [TR, CR, BTR, BR];
@@ -43,9 +51,6 @@ export const IB = [BB, BC];
 export const IBL = [BL, BC];
 export const ITL = [TL, TC];
 
-// Draw targets
-export const HIT_RADIUS = 48;
-
 export function hitTarget(x: number, y: number): Point | null {
   if (hit(x, y, TT)) {
     return TT;
@@ -59,6 +64,8 @@ export function hitTarget(x: number, y: number): Point | null {
     return BL;
   } else if (hit(x, y, TL)) {
     return TL;
+  } else if ((x - DOT_TARGET.x) ** 2 + (y - DOT_TARGET.y) ** 2 < DOT_HIT_RADIUS ** 2) {
+    return DOT;
   } else if (hit(x, y, TC) || hit(x, y, BC) || (Math.abs(x - 128) < HIT_RADIUS && y > TC.y && y < BC.y)) {
     return CC;
   }
@@ -66,7 +73,7 @@ export function hitTarget(x: number, y: number): Point | null {
 }
 
 function hit(x: number, y: number, p: Point) {
-  return (x - p.x)**2 + (y - p.y)**2 < HIT_RADIUS**2;
+  return (x - p.x) ** 2 + (y - p.y) ** 2 < HIT_RADIUS ** 2;
 }
 
 // Returns a number with a binary "1" digit in the place of the encoded line.

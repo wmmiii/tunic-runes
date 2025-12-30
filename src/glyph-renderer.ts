@@ -8,7 +8,10 @@ import {
   HIT_RADIUS,
   CC,
   CL,
-  CR
+  CR,
+  DOT,
+  DOT_TARGET,
+  DOT_HIT_RADIUS
 } from "./glyph";
 import { colors, lineWidth, opacity } from "./theme";
 
@@ -49,6 +52,9 @@ export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 11) {
     strokeLine(ctx, ITL);
   };
+  if (glyph & 2 ** 12) {
+    strokeDot(ctx);
+  };
   strokeGuide(ctx);
 }
 
@@ -68,6 +74,7 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   strokeLine(ctx, IB);
   strokeLine(ctx, IBL);
   strokeLine(ctx, ITL);
+  strokeDot(ctx);
   ctx.stroke();
 
   ctx.strokeStyle = `${colors.glyphHighlight}${opacity.highlightStroke.toString(16)}`;
@@ -91,6 +98,9 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   ctx.arc(BB.x, BB.y, HIT_RADIUS, 0, 2 * Math.PI);
   ctx.stroke();
   ctx.beginPath();
+  ctx.arc(DOT_TARGET.x, DOT_TARGET.y, DOT_HIT_RADIUS, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.beginPath();
   ctx.arc(TC.x, TC.y, HIT_RADIUS, Math.PI, 0);
   ctx.lineTo(BC.x + HIT_RADIUS, BC.y);
   ctx.arc(BC.x, BC.y, HIT_RADIUS, 0, Math.PI);
@@ -102,6 +112,9 @@ export function highlightTarget(ctx: CanvasRenderingContext2D, p: Point) {
   ctx.beginPath();
   if (p === TT || p === TR || p === BR || p === BB || p === BL || p === TL) {
     ctx.arc(p.x, p.y, HIT_RADIUS, 0, 2 * Math.PI);
+    ctx.closePath();
+  } else if (p === DOT) {
+    ctx.arc(DOT_TARGET.x, DOT_TARGET.y, DOT_HIT_RADIUS, 0, 2 * Math.PI);
     ctx.closePath();
   } else if (p === CC) {
     ctx.arc(TC.x, TC.y, HIT_RADIUS, Math.PI, 0);
@@ -118,6 +131,11 @@ function strokeLine(ctx: CanvasRenderingContext2D, segs: Point[]) {
     ctx.moveTo(segs[i].x, segs[i].y);
     ctx.lineTo(segs[i + 1].x, segs[i + 1].y);
   }
+}
+
+function strokeDot(ctx: CanvasRenderingContext2D) {
+  ctx.moveTo(DOT.x + 20, DOT.y);
+  ctx.arc(DOT.x, DOT.y, 20, 0, 2 * Math.PI);
 }
 
 function strokeGuide(ctx: CanvasRenderingContext2D) {
