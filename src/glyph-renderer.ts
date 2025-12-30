@@ -55,7 +55,6 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   ctx.strokeStyle = '#BBB';
   ctx.lineWidth = 16;
   ctx.lineCap = 'round';
-  strokeGuide(ctx);
   strokeLine(ctx, OTR);
   strokeLine(ctx, OR);
   strokeLine(ctx, OBR);
@@ -120,7 +119,7 @@ function strokeLine(ctx: CanvasRenderingContext2D, segs: Point[]) {
   }
 }
 
-function strokeGuide(ctx: CanvasRenderingContext2D) {
-  ctx.moveTo(CL.x, CL.y);
-  ctx.lineTo(CR.x, CR.y);
-}
+// function strokeGuide(ctx: CanvasRenderingContext2D) {
+//   ctx.moveTo(CL.x, CL.y);
+//   ctx.lineTo(CR.x, CR.y);
+// }

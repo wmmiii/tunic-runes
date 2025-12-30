@@ -78,7 +78,7 @@ export function encodedLine(a: Point, b: Point) {
 
   // Map to strokeGlyph bit positions
   if (matches(a, b, [TT, TR])) return 2 ** 0;
-  if (matches(a, b, [TR, CC])) return 2 ** 1;
+  if (matches(a, b, [TR, BR])) return 2 ** 1;
   if (matches(a, b, [BR, BB])) return 2 ** 2;
   if (matches(a, b, [BL, BB])) return 2 ** 3;
   if (matches(a, b, [BL, TL])) return 2 ** 4;
