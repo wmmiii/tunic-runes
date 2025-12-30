@@ -1,31 +1,37 @@
 :root {
-  /* Tunic color palette - warm, earthy tones */
-  --color-bg-primary: #F5F3EF;
-  --color-bg-header: #FAF8F4;
-  --color-text-primary: #2C2C2C;
-  --color-text-secondary: #8B7B6B;
-  --color-text-heading: #6B5638;
+  /* Tunic dark theme - mysterious night with glowing magical runes */
+  --color-bg-primary: #0F1419;
+  --color-bg-header: #151B23;
+  --color-text-primary: #E8F0F8;
+  --color-text-secondary: #8FA3B8;
+  --color-text-heading: #C4D9ED;
 
-  /* Canvas/Glyph colors */
-  --color-glyph-active: #5C4A2F;
-  --color-glyph-sequence: #8B6F47;
-  --color-glyph-template: #D4CCBE;
-  --color-glyph-highlight: #D9A865;
+  /* Canvas/Glyph colors - glowing cyan magic */
+  --color-glyph-active: #4DD4E8;
+  --color-glyph-sequence: #5BE3F7;
+  --color-glyph-template: #2A4A5C;
+  --color-glyph-highlight: #6FFFE9;
 
-  /* Accent colors */
-  --color-accent-gold: #D4A574;
-  --color-accent-gold-light: #E8C58A;
-  --color-accent-gold-lighter: #F0D19A;
-  --color-accent-gold-dark: #C89563;
-  --color-accent-gold-darker: #B88552;
+  /* Accent colors - ethereal cyan glow */
+  --color-accent-cyan: #4DD4E8;
+  --color-accent-cyan-light: #6FE3F0;
+  --color-accent-cyan-bright: #8FFBFF;
+  --color-accent-cyan-dark: #3AB8CC;
+  --color-accent-cyan-darker: #2A8FA0;
+
+  /* Royal gold accents */
+  --color-accent-gold: #FFD700;
+  --color-accent-gold-light: #FFE55C;
+  --color-accent-gold-dim: #D4AF37;
 
   /* Border colors */
-  --color-border-primary: #D4CCBE;
+  --color-border-primary: #2A3A4A;
+  --color-border-glow: #4DD4E8;
 
   /* Disabled/muted colors */
-  --color-disabled-bg: #D4D2CE;
-  --color-disabled-bg-dark: #C4C2BE;
-  --color-disabled-text: #8A8A8A;
+  --color-disabled-bg: #1A2430;
+  --color-disabled-bg-dark: #0F1419;
+  --color-disabled-text: #4A5A6A;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -56,18 +62,19 @@ body {
   color: var(--color-text-primary);
 }
 
-/* Button styles - inspired by Tunic's soft, playful aesthetic */
+/* Button styles - glowing magical button */
 button {
   padding: 0.75rem var(--spacing-lg);
   font-size: 1rem;
   font-family: inherit;
   font-weight: 500;
-  color: var(--color-text-primary);
-  background: linear-gradient(135deg, var(--color-accent-gold-light) 0%, var(--color-accent-gold) 100%);
-  border: none;
+  color: #0F1419;
+  background: linear-gradient(135deg, var(--color-accent-cyan-light) 0%, var(--color-accent-cyan) 100%);
+  border: 1px solid var(--color-accent-cyan-bright);
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3),
-              0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(77, 212, 232, 0.4),
+              0 0 40px rgba(77, 212, 232, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -75,31 +82,36 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-accent-gold-lighter) 0%, #DDB184 100%);
-  box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4),
-              0 2px 4px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, var(--color-accent-cyan-bright) 0%, var(--color-accent-cyan-light) 100%);
+  box-shadow: 0 0 30px rgba(77, 212, 232, 0.6),
+              0 0 60px rgba(77, 212, 232, 0.3),
+              0 0 80px rgba(111, 255, 233, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(212, 165, 116, 0.3),
-              0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 15px rgba(77, 212, 232, 0.5),
+              0 0 30px rgba(77, 212, 232, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 button:disabled {
   background: linear-gradient(135deg, var(--color-disabled-bg) 0%, var(--color-disabled-bg-dark) 100%);
   color: var(--color-disabled-text);
+  border: 1px solid var(--color-border-primary);
   cursor: not-allowed;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
-/* Link styles - warm and inviting */
+/* Link styles - glowing cyan links */
 a {
-  color: var(--color-accent-gold);
+  color: var(--color-accent-cyan);
   text-decoration: none;
   position: relative;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 10px rgba(77, 212, 232, 0.3);
 }
 
 a::after {
@@ -108,20 +120,24 @@ a::after {
   bottom: -2px;
   left: 0;
   width: 100%;
-  height: 1px;
-  background-color: var(--color-accent-gold);
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent-cyan) 0%, var(--color-accent-gold) 100%);
   opacity: 0;
+  box-shadow: 0 0 8px rgba(77, 212, 232, 0.6);
   transition: opacity 0.2s ease;
 }
 
 a:hover {
-  color: var(--color-accent-gold-dark);
+  color: var(--color-accent-cyan-bright);
+  text-shadow: 0 0 20px rgba(77, 212, 232, 0.6),
+               0 0 40px rgba(77, 212, 232, 0.3);
 }
 
 a:hover::after {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 a:active {
-  color: var(--color-accent-gold-darker);
+  color: var(--color-accent-gold);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
 }

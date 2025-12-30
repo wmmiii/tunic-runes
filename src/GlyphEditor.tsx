@@ -34,12 +34,19 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     drawTemplate(ctx);
 
+    // Draw active glyph with glow effect
     ctx.lineWidth = lineWidth.glyphEditor;
     ctx.strokeStyle = colors.glyphActive;
+    ctx.lineCap = 'round';
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = 'rgba(77, 212, 232, 0.8)';
     ctx.beginPath();
     strokeGlyph(ctx, glyph);
     ctx.stroke();
     ctx.closePath();
+
+    // Reset shadow for highlights
+    ctx.shadowBlur = 0;
 
     if (highlightedTarget) {
       highlightTarget(ctx, highlightedTarget);

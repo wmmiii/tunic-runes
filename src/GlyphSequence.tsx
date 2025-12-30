@@ -28,10 +28,12 @@ export function GlyphSequence({ glyphs, scale, width, height }: GlyphSequencePro
 
     const scaledGlyphWidth = 256 * scale;
 
-    // Set line properties for the glyphs
+    // Set line properties for the glyphs with glow
     ctx.strokeStyle = colors.glyphSequence;
     ctx.lineWidth = lineWidth.glyphSequence;
     ctx.lineCap = 'round';
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = 'rgba(91, 227, 247, 0.7)';
 
     // Render glyphs from right to left, left justified
     let xOffset = scaledGlyphWidth;

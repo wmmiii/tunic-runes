@@ -10,7 +10,7 @@ import {
   CL,
   CR
 } from "./glyph";
-import { colors, lineWidth, opacity } from "./theme";
+import { colors, lineWidth, opacity, glow } from "./theme";
 
 export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 0) {
@@ -53,9 +53,12 @@ export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
 }
 
 export function drawTemplate(ctx: CanvasRenderingContext2D) {
+  // Draw template with subtle glow
   ctx.strokeStyle = colors.glyphTemplate;
   ctx.lineWidth = lineWidth.template;
   ctx.lineCap = 'round';
+  ctx.shadowBlur = 5;
+  ctx.shadowColor = 'rgba(42, 74, 92, 0.5)';
   strokeLine(ctx, OTR);
   strokeLine(ctx, OR);
   strokeLine(ctx, OBR);
@@ -70,6 +73,9 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   strokeLine(ctx, ITL);
   ctx.stroke();
 
+  // Draw target circles with glow
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = glow.color;
   ctx.strokeStyle = `${colors.glyphHighlight}${opacity.highlightStroke.toString(16)}`;
   ctx.lineWidth = lineWidth.highlightOutline;
   ctx.beginPath();
@@ -109,8 +115,15 @@ export function highlightTarget(ctx: CanvasRenderingContext2D, p: Point) {
     ctx.arc(BC.x, BC.y, HIT_RADIUS, 0, Math.PI);
     ctx.closePath();
   }
+
+  // Intense glow for highlights
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = glow.colorIntense;
   ctx.fillStyle = `${colors.glyphHighlight}${opacity.highlightFill.toString(16)}`;
   ctx.fill();
+
+  // Reset shadow
+  ctx.shadowBlur = 0;
 }
 
 function strokeLine(ctx: CanvasRenderingContext2D, segs: Point[]) {
