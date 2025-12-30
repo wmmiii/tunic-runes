@@ -4,11 +4,36 @@ import { GlyphSequence } from './GlyphSequence';
 import { Glyph, SPACE } from './glyph';
 import styles from './App.module.css';
 
+const STORAGE_KEY = 'tunic-runes-sequence';
+
 function App() {
   const sequenceContainerRef = useRef<HTMLDivElement>(null);
   const [sequenceWidth, setSequenceWidth] = useState(0);
   const [currentGlyph, setCurrentGlyph] = useState<Glyph>(0);
-  const [glyphSequence, setGlyphSequence] = useState<Glyph[]>([]);
+  const [glyphSequence, setGlyphSequence] = useState<Glyph[]>(() => {
+    // Load sequence from localStorage on initial load
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load sequence from localStorage:', error);
+    }
+    return [];
+  });
+
+  // Save sequence to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(glyphSequence));
+    } catch (error) {
+      console.error('Failed to save sequence to localStorage:', error);
+    }
+  }, [glyphSequence]);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -77,6 +102,12 @@ function App() {
             disabled={glyphSequence.length === 0 || glyphSequence[glyphSequence.length - 1] === SPACE}
           >
             Add Space
+          </button>
+          <button
+            onClick={() => setGlyphSequence([])}
+            disabled={glyphSequence.length === 0}
+          >
+            Clear Sequence
           </button>
         </div>
         <div ref={sequenceContainerRef} className={styles.sequenceContainer}>
