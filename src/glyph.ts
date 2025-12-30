@@ -33,10 +33,10 @@ export const OBR = [BR, BB];
 export const OBL = [BL, BB];
 export const OL = [BL, BTL, CL, TL];
 export const OTL = [TL, TT];
-export const IT = [TT, TC];
+export const IT = [TT, TC, TC, CC];
 export const ITR = [TR, TC];
 export const IBR = [BR, BC];
-export const IB = [BB, BC, CC, TC];
+export const IB = [BB, BC];
 export const IBL = [BL, BC];
 export const ITL = [TL, TC];
 
