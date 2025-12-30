@@ -52,16 +52,6 @@ function App() {
     setCurrentGlyph(0);
   };
 
-  const handleAddSpace = () => {
-    setGlyphSequence(prev => {
-      // Don't add space if sequence is empty or last glyph is already a space
-      if (prev.length === 0 || prev[prev.length - 1] === SPACE) {
-        return prev;
-      }
-      return [...prev, SPACE];
-    });
-  };
-
   return (
     <div className={styles.container}>
       <header>
@@ -92,22 +82,17 @@ function App() {
         </div>
       </header>
       <main className={styles.content}>
+        <button
+          className={styles.clearButton}
+          onClick={() => setGlyphSequence([])}
+          disabled={glyphSequence.length === 0}
+        >
+          Clear Sequence
+        </button>
         <div className={styles.editor}>
           <GlyphEditor glyph={currentGlyph} setGlyph={setCurrentGlyph} />
-          <button onClick={handleAddGlyph} disabled={currentGlyph === 0}>
-            Add to Sequence
-          </button>
-          <button
-            onClick={handleAddSpace}
-            disabled={glyphSequence.length === 0 || glyphSequence[glyphSequence.length - 1] === SPACE}
-          >
-            Add Space
-          </button>
-          <button
-            onClick={() => setGlyphSequence([])}
-            disabled={glyphSequence.length === 0}
-          >
-            Clear Sequence
+          <button onClick={handleAddGlyph} disabled={currentGlyph === SPACE && (glyphSequence.length === 0 || glyphSequence[glyphSequence.length - 1] === SPACE)}>
+            Add {currentGlyph === SPACE ? 'space' : 'rune'}
           </button>
         </div>
         <div ref={sequenceContainerRef} className={styles.sequenceContainer}>
