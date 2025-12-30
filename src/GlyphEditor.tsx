@@ -45,13 +45,13 @@ export function GlyphEditor({ className }: GlyphEditorProps) {
     }
   }, [glyph, highlightedTarget, lastTarget]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMove = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left - 64) / scale;
-    const y = (e.clientY - rect.top - 64) / scale;
+    const x = (clientX - rect.left - 64) / scale;
+    const y = (clientY - rect.top - 64) / scale;
 
     const target = hitTarget(x, y);
     setHighlightedTarget(target);
@@ -64,13 +64,10 @@ export function GlyphEditor({ className }: GlyphEditorProps) {
     }
   };
 
-  const handleMouseDown = () => {
-    setMouseDown(true);
-  };
-
-  const handleMouseUp = () => {
+  const handleEnd = () => {
     setMouseDown(false);
     setLastTarget(null);
+    setHighlightedTarget(null);
   };
 
   return (
@@ -79,9 +76,22 @@ export function GlyphEditor({ className }: GlyphEditorProps) {
       className={`${styles.canvas} ${className}`}
       width={256}
       height={512}
-      onMouseMove={handleMouseMove}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
+      onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+      onMouseDown={() => setMouseDown(true)}
+      onMouseUp={handleEnd}
+      onTouchMove={(e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        if (touch) handleMove(touch.clientX, touch.clientY);
+      }}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        setMouseDown(true);
+      }}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        handleEnd();
+      }}
     />
   );
 }
