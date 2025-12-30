@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { GlyphEditor } from './GlyphEditor';
 import { GlyphSequence } from './GlyphSequence';
-import { Glyph } from './glyph';
+import { Glyph, SPACE } from './glyph';
 import styles from './App.module.css';
 
 function App() {
@@ -27,6 +27,16 @@ function App() {
     setCurrentGlyph(0);
   };
 
+  const handleAddSpace = () => {
+    setGlyphSequence(prev => {
+      // Don't add space if sequence is empty or last glyph is already a space
+      if (prev.length === 0 || prev[prev.length - 1] === SPACE) {
+        return prev;
+      }
+      return [...prev, SPACE];
+    });
+  };
+
   return (
     <div className={styles.container}>
       <header>
@@ -35,7 +45,7 @@ function App() {
         </div>
         <div className={styles.headerRight}>
           <p className={styles.madeWith}>
-            Made with love ❤️ by{' '}
+            Made with ❤️ by{' '}
             <a
               href="https://github.com/wmmiii/tunic-runes"
               target="_blank"
@@ -61,6 +71,12 @@ function App() {
           <GlyphEditor glyph={currentGlyph} setGlyph={setCurrentGlyph} />
           <button onClick={handleAddGlyph} disabled={currentGlyph === 0}>
             Add to Sequence
+          </button>
+          <button
+            onClick={handleAddSpace}
+            disabled={glyphSequence.length === 0 || glyphSequence[glyphSequence.length - 1] === SPACE}
+          >
+            Add Space
           </button>
         </div>
         <div ref={sequenceContainerRef} className={styles.sequenceContainer}>

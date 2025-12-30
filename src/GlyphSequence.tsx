@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Glyph } from './glyph';
+import { Glyph, SPACE } from './glyph';
 import { strokeGlyph } from './glyph-renderer';
 import { colors, lineWidth } from './theme';
 import styles from './GlyphSequence.module.css';
@@ -33,9 +33,15 @@ export function GlyphSequence({ glyphs, scale, width, height }: GlyphSequencePro
     ctx.lineWidth = lineWidth.glyphSequence;
     ctx.lineCap = 'round';
 
-    // Render glyphs from right to left, left justified
+    // Render glyphs from left to right, left justified
     let xOffset = scaledGlyphWidth;
     for (let i = 0; i < glyphs.length; i++) {
+      // Handle space character - skip rendering but advance offset
+      if (glyphs[i] === SPACE) {
+        xOffset += scaledGlyphWidth * 0.5; // Space is half the width of a regular glyph
+        continue;
+      }
+
       ctx.save();
 
       // Position: left justified, vertically centered

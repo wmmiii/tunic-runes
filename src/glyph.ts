@@ -1,5 +1,8 @@
 export type Glyph = number;
 
+// Special glyph values
+export const SPACE = 0;
+
 // Glyph points assuming a width of 256
 export interface Point {
   x: number;
