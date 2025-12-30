@@ -4,15 +4,15 @@ import { drawTemplate, highlightTarget, strokeGlyph } from './glyph-renderer';
 import styles from './GlyphEditor.module.css';
 
 interface GlyphEditorProps {
-  className: string;
+  glyph: Glyph;
+  setGlyph: (compute: (glyph: Glyph) => Glyph) => void;
 }
 
 const CANVAS_WIDTH = 256;
 const CANVAS_HEIGHT = 360;
 
-export function GlyphEditor({ className }: GlyphEditorProps) {
+export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [glyph, setGlyph] = useState<Glyph>(0);
   const [highlightedTarget, setHighlightedTarget] = useState<Point | null>(null);
   const [lastTarget, setLastTarget] = useState<Point | null>(null);
   const [mouseDown, setMouseDown] = useState(false);
@@ -76,7 +76,7 @@ export function GlyphEditor({ className }: GlyphEditorProps) {
   return (
     <canvas
       ref={canvasRef}
-      className={`${styles.canvas} ${className}`}
+      className={styles.canvas}
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
       style={{ width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT}px` }}
