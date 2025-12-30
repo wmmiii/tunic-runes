@@ -6,7 +6,9 @@ import {
   OTR, OR, OBR, OBL, OL, OTL,
   IT, ITR, IBR, IB, IBL, ITL,
   HIT_RADIUS,
-  CC
+  CC,
+  CL,
+  CR
 } from "./glyph";
 
 const HIGHLIGHT_COLOR = '#ffa600';
@@ -48,6 +50,7 @@ export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 11) {
     strokeLine(ctx, ITL);
   };
+  strokeGuide(ctx);
 }
 
 export function drawTemplate(ctx: CanvasRenderingContext2D) {
@@ -118,7 +121,7 @@ function strokeLine(ctx: CanvasRenderingContext2D, segs: Point[]) {
   }
 }
 
-// function strokeGuide(ctx: CanvasRenderingContext2D) {
-//   ctx.moveTo(CL.x, CL.y);
-//   ctx.lineTo(CR.x, CR.y);
-// }
+function strokeGuide(ctx: CanvasRenderingContext2D) {
+  ctx.moveTo(CL.x, CL.y);
+  ctx.lineTo(CR.x, CR.y);
+}
