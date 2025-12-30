@@ -1,3 +1,44 @@
+:root {
+  /* Tunic color palette - warm, earthy tones */
+  --color-bg-primary: #F5F3EF;
+  --color-bg-header: #FAF8F4;
+  --color-text-primary: #2C2C2C;
+  --color-text-secondary: #8B7B6B;
+  --color-text-heading: #6B5638;
+
+  /* Canvas/Glyph colors */
+  --color-glyph-active: #5C4A2F;
+  --color-glyph-sequence: #8B6F47;
+  --color-glyph-template: #D4CCBE;
+  --color-glyph-highlight: #D9A865;
+
+  /* Accent colors */
+  --color-accent-gold: #D4A574;
+  --color-accent-gold-light: #E8C58A;
+  --color-accent-gold-lighter: #F0D19A;
+  --color-accent-gold-dark: #C89563;
+  --color-accent-gold-darker: #B88552;
+
+  /* Border colors */
+  --color-border-primary: #D4CCBE;
+
+  /* Disabled/muted colors */
+  --color-disabled-bg: #D4D2CE;
+  --color-disabled-bg-dark: #C4C2BE;
+  --color-disabled-text: #8A8A8A;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -11,4 +52,76 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* Button styles - inspired by Tunic's soft, playful aesthetic */
+button {
+  padding: 0.75rem var(--spacing-lg);
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-accent-gold-light) 0%, var(--color-accent-gold) 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3),
+              0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-accent-gold-lighter) 0%, #DDB184 100%);
+  box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4),
+              0 2px 4px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(212, 165, 116, 0.3),
+              0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+  background: linear-gradient(135deg, var(--color-disabled-bg) 0%, var(--color-disabled-bg-dark) 100%);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Link styles - warm and inviting */
+a {
+  color: var(--color-accent-gold);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-accent-gold);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent-gold-dark);
+}
+
+a:hover::after {
+  opacity: 0.6;
+}
+
+a:active {
+  color: var(--color-accent-gold-darker);
 }

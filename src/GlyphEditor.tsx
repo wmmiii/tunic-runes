@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { encodedLine, Glyph, hitTarget, Point } from './glyph';
 import { drawTemplate, highlightTarget, strokeGlyph } from './glyph-renderer';
+import { colors, lineWidth } from './theme';
 import styles from './GlyphEditor.module.css';
 
 interface GlyphEditorProps {
@@ -33,8 +34,8 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     drawTemplate(ctx);
 
-    ctx.lineWidth = 24;
-    ctx.strokeStyle = '#333';
+    ctx.lineWidth = lineWidth.glyphEditor;
+    ctx.strokeStyle = colors.glyphActive;
     ctx.beginPath();
     strokeGlyph(ctx, glyph);
     ctx.stroke();

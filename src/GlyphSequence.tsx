@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Glyph } from './glyph';
 import { strokeGlyph } from './glyph-renderer';
+import { colors, lineWidth } from './theme';
 import styles from './GlyphSequence.module.css';
 
 interface GlyphSequenceProps {
@@ -28,12 +29,12 @@ export function GlyphSequence({ glyphs, scale, width, height }: GlyphSequencePro
     const scaledGlyphWidth = 256 * scale;
 
     // Set line properties for the glyphs
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 16;
+    ctx.strokeStyle = colors.glyphSequence;
+    ctx.lineWidth = lineWidth.glyphSequence;
     ctx.lineCap = 'round';
 
     // Render glyphs from right to left, left justified
-    let xOffset = 0;
+    let xOffset = scaledGlyphWidth;
     for (let i = 0; i < glyphs.length; i++) {
       ctx.save();
 

@@ -10,8 +10,7 @@ import {
   CL,
   CR
 } from "./glyph";
-
-const HIGHLIGHT_COLOR = '#ffa600';
+import { colors, lineWidth, opacity } from "./theme";
 
 export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 0) {
@@ -54,8 +53,8 @@ export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
 }
 
 export function drawTemplate(ctx: CanvasRenderingContext2D) {
-  ctx.strokeStyle = '#BBB';
-  ctx.lineWidth = 16;
+  ctx.strokeStyle = colors.glyphTemplate;
+  ctx.lineWidth = lineWidth.template;
   ctx.lineCap = 'round';
   strokeLine(ctx, OTR);
   strokeLine(ctx, OR);
@@ -71,8 +70,8 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   strokeLine(ctx, ITL);
   ctx.stroke();
 
-  ctx.strokeStyle = `${HIGHLIGHT_COLOR}c4`;
-  ctx.lineWidth = 4;
+  ctx.strokeStyle = `${colors.glyphHighlight}${opacity.highlightStroke.toString(16)}`;
+  ctx.lineWidth = lineWidth.highlightOutline;
   ctx.beginPath();
   ctx.arc(TT.x, TT.y, HIT_RADIUS, 0, 2 * Math.PI);
   ctx.stroke();
@@ -110,7 +109,7 @@ export function highlightTarget(ctx: CanvasRenderingContext2D, p: Point) {
     ctx.arc(BC.x, BC.y, HIT_RADIUS, 0, Math.PI);
     ctx.closePath();
   }
-  ctx.fillStyle = `${HIGHLIGHT_COLOR}66`;
+  ctx.fillStyle = `${colors.glyphHighlight}${opacity.highlightFill.toString(16)}`;
   ctx.fill();
 }
 
