@@ -41,7 +41,7 @@ export const IBL = [BL, BC];
 export const ITL = [TL, TC];
 
 // Draw targets
-export const HIT_RADIUS = 32;
+export const HIT_RADIUS = 48;
 
 export function hitTarget(x: number, y: number): Point | null {
   if (hit(x, y, TT)) {
