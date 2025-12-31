@@ -20,13 +20,13 @@ export const TR: Point = { x: 256, y: 74 };
 export const TC: Point = { x: 128, y: 148 };
 
 // Center line
-const CENTER_MARGIN = (TC.y - TT.y) / 3;
+const CENTER_MARGIN = (TC.y - TT.y) / 2;
 export const CC: Point = { x: 128, y: TC.y + CENTER_MARGIN };
 export const CL: Point = { x: 0, y: CC.y };
 export const CR: Point = { x: 256, y: CC.y };
 
 // Bottom
-export const BC: Point = { x: 128, y: CC.y + CENTER_MARGIN };
+export const BC: Point = { x: 128, y: TC.y * 2.125 };
 export const BTL: Point = { x: 0, y: BC.y };
 export const BTR: Point = { x: 256, y: BC.y };
 export const BL: Point = { x: 0, y: BC.y + TC.y - TL.y };
@@ -34,8 +34,13 @@ export const BR: Point = { x: 256, y: BC.y + TC.y - TR.y };
 export const BB: Point = { x: 128, y: BC.y + TC.y - TT.y };
 
 // Dot
-export const DOT: Point = { x: 128, y: 415 };
+export const DOT_RADIUS = 28;
+export const DOT: Point = { x: 128, y: BB.y + DOT_RADIUS };
 export const DOT_TARGET: Point = {x: 128, y: BB.y + HIT_RADIUS * 2};
+
+// Glyph dimensions
+export const GLYPH_WIDTH = 256;
+export const GLYPH_HEIGHT = DOT.y + DOT_RADIUS;
 
 // Lines
 export const OTR = [TT, TR];

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { encodedLine, Glyph, hitTarget, Point, DOT } from './glyph';
 import { drawTemplate, highlightTarget, strokeGlyph } from './glyph-renderer';
-import { colors, lineWidth } from './theme';
 import styles from './GlyphEditor.module.css';
+import { getCSSVar } from './browserUtils';
 
 interface GlyphEditorProps {
   glyph: Glyph;
@@ -10,13 +10,14 @@ interface GlyphEditorProps {
 }
 
 const CANVAS_WIDTH = 256;
-const CANVAS_HEIGHT = 360;
+const CANVAS_HEIGHT = 370;
 
 export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [highlightedTarget, setHighlightedTarget] = useState<Point | null>(null);
   const [lastTarget, setLastTarget] = useState<Point | null>(null);
   const [mouseDown, setMouseDown] = useState(false);
+  const [hovering, setHovering] = useState(false);
 
   const scale = 0.5;
 
@@ -45,8 +46,11 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     drawTemplate(ctx);
 
-    ctx.lineWidth = lineWidth.glyphEditor;
-    ctx.strokeStyle = colors.glyphActive;
+    const glyphActive = getCSSVar('--color-glyph-active');
+    const editorLineWidth = parseFloat(getCSSVar('--line-width-glyph-editor'));
+
+    ctx.lineWidth = editorLineWidth;
+    ctx.strokeStyle = glyphActive;
     ctx.beginPath();
     strokeGlyph(ctx, glyph);
     ctx.stroke();
@@ -66,6 +70,11 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
 
     const target = hitTarget(coords.x, coords.y);
     setHighlightedTarget(target);
+    if (target) {
+      setHovering(true);
+    } else {
+      setHovering(false);
+    }
 
     if (lastTarget != null && target != null && lastTarget !== target) {
       setGlyph(prev => prev ^ encodedLine(target, lastTarget));
@@ -101,7 +110,11 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
       className={styles.canvas}
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
-      style={{ width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT}px` }}
+      style={{ 
+        cursor: mouseDown || hovering ? 'crosshair' : undefined,
+        width: `${CANVAS_WIDTH}px`,
+        height: `${CANVAS_HEIGHT}px`
+      }}
       onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
       onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
       onMouseUp={handleEnd}

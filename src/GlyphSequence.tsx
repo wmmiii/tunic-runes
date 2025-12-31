@@ -1,84 +1,56 @@
-import { useEffect, useRef } from 'react';
-import { Glyph, SPACE } from './glyph';
-import { strokeGlyph } from './glyph-renderer';
-import { colors, lineWidth } from './theme';
+import { useRef } from 'react';
+import { SPACE, Glyph, GLYPH_HEIGHT, GLYPH_WIDTH } from './glyph';
+import { GlyphGroup } from './GlyphGroup';
 import styles from './GlyphSequence.module.css';
+import { useCssStyle } from './browserUtils';
 
 interface GlyphSequenceProps {
-  glyphs: Glyph[];
-  previewGlyph: Glyph;
-  scale: number;
-  width: number;
-  height: number;
+  children: Glyph[];
+  previewGlyph?: Glyph;
 }
 
-export function GlyphSequence({ glyphs, scale, width, height, previewGlyph }: GlyphSequenceProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export function GlyphSequence({ children, previewGlyph }: GlyphSequenceProps) {
+  let sequenceRef = useRef<HTMLDivElement>(null);
+  const {glyphHeight, strokeWidth} = useCssStyle(sequenceRef);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // Split glyphs into groups separated by spaces
+  const glyphGroups: Glyph[][] = [];
+  let currentGroup: Glyph[] = [];
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      throw new Error('Could not get canvas context');
-    }
-
-    const renderGlyph = (glyph: Glyph) => {
-      ctx.save();
-
-      // Position: left justified, vertically centered
-      const x = xOffset + scaledGlyphWidth / 2;
-      const y = height / 2;
-
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
-      ctx.translate(-128, -128);
-
-      ctx.beginPath();
-      strokeGlyph(ctx, glyph);
-      ctx.stroke();
-      ctx.closePath();
-
-      ctx.restore();
-    };
-
-    ctx.reset();
-    ctx.clearRect(0, 0, width, height);
-
-    const scaledGlyphWidth = 256 * scale;
-
-    // Set line properties for the glyphs
-    ctx.strokeStyle = colors.glyphSequence;
-    ctx.lineWidth = lineWidth.glyphSequence;
-    ctx.lineCap = 'round';
-
-    // Render glyphs from left to right, left justified
-    let xOffset = scaledGlyphWidth;
-    for (let i = 0; i < glyphs.length; i++) {
-      // Handle space character - skip rendering but advance offset
-      if (glyphs[i] === SPACE) {
-        xOffset += scaledGlyphWidth * 0.5; // Space is half the width of a regular glyph
-        continue;
+  for (const glyph of children) {
+    if (glyph === SPACE) {
+      if (currentGroup.length > 0) {
+        glyphGroups.push(currentGroup);
+        currentGroup = [];
       }
-
-      renderGlyph(glyphs[i]);
-
-      xOffset += scaledGlyphWidth;
+    } else {
+      currentGroup.push(glyph);
     }
+  }
 
-    ctx.strokeStyle = colors.glyphPreview;
-    renderGlyph(previewGlyph);
+  // Add the last group if it has glyphs
+  if (currentGroup.length > 0) {
+    glyphGroups.push(currentGroup);
+  }
 
-  }, [glyphs, previewGlyph, scale, width, height]);
+  const spaceWidth = ((glyphHeight / GLYPH_HEIGHT) * GLYPH_WIDTH) / 2;
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={styles.canvas}
-      width={width}
-      height={height}
-      style={{ width: `${width}px`, height: `${height}px` }}
-    />
+    <div ref={sequenceRef} className={styles.container} style={{gap: spaceWidth}}>
+      {glyphGroups.map((group, index) => (
+        <GlyphGroup key={index}>
+          {group}
+        </GlyphGroup>
+      ))}
+      {previewGlyph != null && (
+        <GlyphGroup
+          style={{
+            color: 'var(--color-glyph-preview)',
+            marginLeft: currentGroup.length > 0 ? -(spaceWidth + strokeWidth) : 0,
+          }}>
+            {[previewGlyph]}
+        </GlyphGroup>
+      )}
+    </div>
   );
 }

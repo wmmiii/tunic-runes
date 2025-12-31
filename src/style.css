@@ -9,8 +9,19 @@
   /* Canvas/Glyph colors */
   --color-glyph-active: #5C4A2F;
   --color-glyph-sequence: #8B6F47;
+  --color-glyph-preview: #8B6F4744;
   --color-glyph-template: #D4CCBE;
   --color-glyph-highlight: #D9A865;
+
+  /* Glyph opacity values */
+  --opacity-glyph-highlight-fill: 0.5;
+  --opacity-glyph-highlight-stroke: 0.72;
+
+  /* Glyph line widths */
+  --line-width-glyph-editor: 24px;
+  --line-width-glyph-sequence: 16px;
+  --line-width-glyph-template: 16px;
+  --line-width-glyph-highlight-outline: 4px;
 
   /* Accent colors */
   --color-accent-gold: #D4A574;
@@ -72,7 +83,6 @@ button {
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
-  width: 12rem;
 }
 
 button:hover:not(:disabled) {

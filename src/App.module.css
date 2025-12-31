@@ -62,4 +62,6 @@ header {
 .sequenceContainer {
   width: 100%;
   padding: var(--spacing-md);
+  font-size: 48px;
+  color: var(--color-glyph-sequence);
 }

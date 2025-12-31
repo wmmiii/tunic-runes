@@ -1,3 +1,4 @@
+import { getCSSVar } from "./browserUtils";
 import {
   Glyph,
   Point,
@@ -11,9 +12,9 @@ import {
   CR,
   DOT,
   DOT_TARGET,
-  DOT_HIT_RADIUS
+  DOT_HIT_RADIUS,
+  DOT_RADIUS
 } from "./glyph";
-import { colors, lineWidth, opacity } from "./theme";
 
 export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
   if (glyph & 2 ** 0) {
@@ -59,8 +60,14 @@ export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
 }
 
 export function drawTemplate(ctx: CanvasRenderingContext2D) {
-  ctx.strokeStyle = colors.glyphTemplate;
-  ctx.lineWidth = lineWidth.template;
+  const glyphTemplate = getCSSVar('--color-glyph-template');
+  const glyphHighlight = getCSSVar('--color-glyph-highlight');
+  const templateLineWidth = parseFloat(getCSSVar('--line-width-glyph-template'));
+  const highlightOutlineWidth = parseFloat(getCSSVar('--line-width-glyph-highlight-outline'));
+  const highlightStrokeOpacity = parseFloat(getCSSVar('--opacity-glyph-highlight-stroke'));
+
+  ctx.strokeStyle = glyphTemplate;
+  ctx.lineWidth = templateLineWidth;
   ctx.lineCap = 'round';
   strokeLine(ctx, OTR);
   strokeLine(ctx, OBR);
@@ -76,8 +83,9 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   strokeDot(ctx);
   ctx.stroke();
 
-  ctx.strokeStyle = `${colors.glyphHighlight}${opacity.highlightStroke.toString(16)}`;
-  ctx.lineWidth = lineWidth.highlightOutline;
+  const hexOpacity = Math.round(highlightStrokeOpacity * 255).toString(16).padStart(2, '0');
+  ctx.strokeStyle = `${glyphHighlight}${hexOpacity}`;
+  ctx.lineWidth = highlightOutlineWidth;
   ctx.beginPath();
   ctx.arc(TT.x, TT.y, HIT_RADIUS, 0, 2 * Math.PI);
   ctx.stroke();
@@ -108,6 +116,9 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
 }
 
 export function highlightTarget(ctx: CanvasRenderingContext2D, p: Point) {
+  const glyphHighlight = getCSSVar('--color-glyph-highlight');
+  const highlightFillOpacity = parseFloat(getCSSVar('--opacity-glyph-highlight-fill'));
+
   ctx.beginPath();
   if (p === TT || p === TR || p === BR || p === BB || p === BL || p === TL) {
     ctx.arc(p.x, p.y, HIT_RADIUS, 0, 2 * Math.PI);
@@ -121,7 +132,8 @@ export function highlightTarget(ctx: CanvasRenderingContext2D, p: Point) {
     ctx.arc(BC.x, BC.y, HIT_RADIUS, 0, Math.PI);
     ctx.closePath();
   }
-  ctx.fillStyle = `${colors.glyphHighlight}${opacity.highlightFill.toString(16)}`;
+  const hexOpacity = Math.round(highlightFillOpacity * 255).toString(16).padStart(2, '0');
+  ctx.fillStyle = `${glyphHighlight}${hexOpacity}`;
   ctx.fill();
 }
 
@@ -133,8 +145,8 @@ function strokeLine(ctx: CanvasRenderingContext2D, segs: Point[]) {
 }
 
 function strokeDot(ctx: CanvasRenderingContext2D) {
-  ctx.moveTo(DOT.x + 20, DOT.y);
-  ctx.arc(DOT.x, DOT.y, 20, 0, 2 * Math.PI);
+  ctx.moveTo(DOT.x + DOT_RADIUS, DOT.y);
+  ctx.arc(DOT.x, DOT.y, DOT_RADIUS, 0, 2 * Math.PI);
 }
 
 function strokeGuide(ctx: CanvasRenderingContext2D) {

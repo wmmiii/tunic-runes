@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { GlyphEditor } from './GlyphEditor';
-import { GlyphSequence } from './GlyphSequence';
 import { Glyph, SPACE } from './glyph';
 import styles from './App.module.css';
+import { GlyphSequence } from './GlyphSequence';
 
 const STORAGE_KEY = 'tunic-runes-sequence';
 
@@ -33,6 +33,8 @@ function App() {
     } catch (error) {
       console.error('Failed to save sequence to localStorage:', error);
     }
+
+    console.log(glyphSequence);
   }, [glyphSequence]);
 
   useEffect(() => {
@@ -97,7 +99,9 @@ function App() {
         </div>
         <div ref={sequenceContainerRef} className={styles.sequenceContainer}>
           {sequenceWidth > 0 && (
-            <GlyphSequence glyphs={glyphSequence} previewGlyph={currentGlyph} scale={0.18} width={sequenceWidth} height={120} />
+            <GlyphSequence previewGlyph={currentGlyph}>
+              {glyphSequence}
+            </GlyphSequence>
           )}
         </div>
       </main>
