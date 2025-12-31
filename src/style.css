@@ -1,17 +1,17 @@
 :root {
   /* Tunic color palette - warm, earthy tones */
-  --color-bg-primary: #F5F3EF;
-  --color-bg-header: #FAF8F4;
-  --color-text-primary: #2C2C2C;
-  --color-text-secondary: #8B7B6B;
-  --color-text-heading: #6B5638;
+  --color-bg-primary: #f5f3ef;
+  --color-bg-header: #faf8f4;
+  --color-text-primary: #2c2c2c;
+  --color-text-secondary: #8b7b6b;
+  --color-text-heading: #6b5638;
 
   /* Canvas/Glyph colors */
-  --color-glyph-active: #5C4A2F;
-  --color-glyph-sequence: #8B6F47;
-  --color-glyph-preview: #8B6F4744;
-  --color-glyph-template: #D4CCBE;
-  --color-glyph-highlight: #D9A865;
+  --color-glyph-active: #5c4a2f;
+  --color-glyph-sequence: #8b6f47;
+  --color-glyph-preview: #8b6f4744;
+  --color-glyph-template: #d4ccbe;
+  --color-glyph-highlight: #d9a865;
 
   /* Glyph opacity values */
   --opacity-glyph-highlight-fill: 0.5;
@@ -24,19 +24,19 @@
   --line-width-glyph-highlight-outline: 4px;
 
   /* Accent colors */
-  --color-accent-gold: #D4A574;
-  --color-accent-gold-light: #E8C58A;
-  --color-accent-gold-lighter: #F0D19A;
-  --color-accent-gold-dark: #C89563;
-  --color-accent-gold-darker: #B88552;
+  --color-accent-gold: #d4a574;
+  --color-accent-gold-light: #e8c58a;
+  --color-accent-gold-lighter: #f0d19a;
+  --color-accent-gold-dark: #c89563;
+  --color-accent-gold-darker: #b88552;
 
   /* Border colors */
-  --color-border-primary: #D4CCBE;
+  --color-border-primary: #d4ccbe;
 
   /* Disabled/muted colors */
-  --color-disabled-bg: #D4D2CE;
-  --color-disabled-bg-dark: #C4C2BE;
-  --color-disabled-text: #8A8A8A;
+  --color-disabled-bg: #d4d2ce;
+  --color-disabled-bg-dark: #c4c2be;
+  --color-disabled-text: #8a8a8a;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -51,78 +51,89 @@
 }
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html,
 body {
-  width: 100%;
-  height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  height: 100%;
+  width: 100%;
 }
 
 /* Button styles - inspired by Tunic's soft, playful aesthetic */
 button {
-  padding: 0.75rem var(--spacing-lg);
-  font-size: 1rem;
-  font-family: inherit;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  background: linear-gradient(135deg, var(--color-accent-gold-light) 0%, var(--color-accent-gold) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-gold-light) 0%,
+    var(--color-accent-gold) 100%
+  );
   border: none;
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3),
-              0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 2px 8px rgba(212, 165, 116, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  color: var(--color-text-primary);
   cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
   overflow: hidden;
+  padding: 0.75rem var(--spacing-lg);
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 button:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-accent-gold-lighter) 0%, #DDB184 100%);
-  box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4),
-              0 2px 4px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, var(--color-accent-gold-lighter) 0%, #ddb184 100%);
+  box-shadow:
+    0 4px 12px rgba(212, 165, 116, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
 button:active:not(:disabled) {
+  box-shadow:
+    0 1px 4px rgba(212, 165, 116, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.1);
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(212, 165, 116, 0.3),
-              0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 button:disabled {
-  background: linear-gradient(135deg, var(--color-disabled-bg) 0%, var(--color-disabled-bg-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-disabled-bg) 0%,
+    var(--color-disabled-bg-dark) 100%
+  );
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   color: var(--color-disabled-text);
   cursor: not-allowed;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 /* Link styles - warm and inviting */
 a {
   color: var(--color-accent-gold);
-  text-decoration: none;
   position: relative;
+  text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 1px;
   background-color: var(--color-accent-gold);
+  bottom: -2px;
+  content: '';
+  height: 1px;
+  left: 0;
   opacity: 0;
+  position: absolute;
   transition: opacity 0.2s ease;
+  width: 100%;
 }
 
 a:hover {

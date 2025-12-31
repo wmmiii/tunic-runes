@@ -11,7 +11,7 @@ interface GlyphSequenceProps {
 
 export function GlyphSequence({ children, previewGlyph }: GlyphSequenceProps) {
   let sequenceRef = useRef<HTMLDivElement>(null);
-  const {glyphHeight, strokeWidth} = useCssStyle(sequenceRef);
+  const { glyphHeight, strokeWidth } = useCssStyle(sequenceRef);
 
   // Split glyphs into groups separated by spaces
   const glyphGroups: Glyph[][] = [];
@@ -36,19 +36,18 @@ export function GlyphSequence({ children, previewGlyph }: GlyphSequenceProps) {
   const spaceWidth = ((glyphHeight / GLYPH_HEIGHT) * GLYPH_WIDTH) / 2;
 
   return (
-    <div ref={sequenceRef} className={styles.container} style={{gap: spaceWidth}}>
+    <div ref={sequenceRef} className={styles.container} style={{ gap: spaceWidth }}>
       {glyphGroups.map((group, index) => (
-        <GlyphGroup key={index}>
-          {group}
-        </GlyphGroup>
+        <GlyphGroup key={index}>{group}</GlyphGroup>
       ))}
       {previewGlyph != null && (
         <GlyphGroup
           style={{
             color: 'var(--color-glyph-preview)',
             marginLeft: currentGroup.length > 0 ? -(spaceWidth + strokeWidth) : 0,
-          }}>
-            {[previewGlyph]}
+          }}
+        >
+          {[previewGlyph]}
         </GlyphGroup>
       )}
     </div>

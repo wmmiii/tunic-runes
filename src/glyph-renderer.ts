@@ -1,11 +1,26 @@
-import { getCSSVar } from "./browserUtils";
+import { getCSSVar } from './browserUtils';
 import {
   Glyph,
   Point,
-  TT, TL, TR, TC,
-  BC, BL, BR, BB,
-  OTR, OBR, OBL, OL, OTL,
-  IT, ITR, IBR, IB, IBL, ITL,
+  TT,
+  TL,
+  TR,
+  TC,
+  BC,
+  BL,
+  BR,
+  BB,
+  OTR,
+  OBR,
+  OBL,
+  OL,
+  OTL,
+  IT,
+  ITR,
+  IBR,
+  IB,
+  IBL,
+  ITL,
   HIT_RADIUS,
   CC,
   CL,
@@ -13,49 +28,48 @@ import {
   DOT,
   DOT_TARGET,
   DOT_HIT_RADIUS,
-  DOT_RADIUS
-} from "./glyph";
+  DOT_RADIUS,
+} from './glyph';
 
 export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
-  if (glyph & 2 ** 0) {
+  if (glyph & (2 ** 0)) {
     strokeLine(ctx, OBR);
-  };
-  if (glyph & 2 ** 1) {
+  }
+  if (glyph & (2 ** 1)) {
     strokeLine(ctx, OBL);
-  };
-  if (glyph & 2 ** 2) {
+  }
+  if (glyph & (2 ** 2)) {
     strokeLine(ctx, OL);
-  };
-  if (glyph & 2 ** 3) {
+  }
+  if (glyph & (2 ** 3)) {
     strokeLine(ctx, OTL);
-  };
-  if (glyph & 2 ** 4) {
+  }
+  if (glyph & (2 ** 4)) {
     strokeLine(ctx, OTR);
-  };
+  }
 
-  if (glyph & 2 ** 5) {
+  if (glyph & (2 ** 5)) {
     strokeDot(ctx);
-  };
+  }
 
-
-  if (glyph & 2 ** 6) {
+  if (glyph & (2 ** 6)) {
     strokeLine(ctx, IT);
-  };
-  if (glyph & 2 ** 7) {
+  }
+  if (glyph & (2 ** 7)) {
     strokeLine(ctx, ITR);
-  };
-  if (glyph & 2 ** 8) {
+  }
+  if (glyph & (2 ** 8)) {
     strokeLine(ctx, IBR);
-  };
-  if (glyph & 2 ** 9) {
+  }
+  if (glyph & (2 ** 9)) {
     strokeLine(ctx, IB);
-  };
-  if (glyph & 2 ** 10) {
+  }
+  if (glyph & (2 ** 10)) {
     strokeLine(ctx, IBL);
-  };
-  if (glyph & 2 ** 11) {
+  }
+  if (glyph & (2 ** 11)) {
     strokeLine(ctx, ITL);
-  };
+  }
   strokeGuide(ctx);
 }
 
@@ -83,7 +97,9 @@ export function drawTemplate(ctx: CanvasRenderingContext2D) {
   strokeDot(ctx);
   ctx.stroke();
 
-  const hexOpacity = Math.round(highlightStrokeOpacity * 255).toString(16).padStart(2, '0');
+  const hexOpacity = Math.round(highlightStrokeOpacity * 255)
+    .toString(16)
+    .padStart(2, '0');
   ctx.strokeStyle = `${glyphHighlight}${hexOpacity}`;
   ctx.lineWidth = highlightOutlineWidth;
   ctx.beginPath();
@@ -132,7 +148,9 @@ export function highlightTarget(ctx: CanvasRenderingContext2D, p: Point) {
     ctx.arc(BC.x, BC.y, HIT_RADIUS, 0, Math.PI);
     ctx.closePath();
   }
-  const hexOpacity = Math.round(highlightFillOpacity * 255).toString(16).padStart(2, '0');
+  const hexOpacity = Math.round(highlightFillOpacity * 255)
+    .toString(16)
+    .padStart(2, '0');
   ctx.fillStyle = `${glyphHighlight}${hexOpacity}`;
   ctx.fill();
 }

@@ -11,7 +11,7 @@ interface GlyphGroupProps {
 
 export function GlyphGroup({ style, children: glyphs }: GlyphGroupProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const {glyphHeight, strokeWidth, color} = useCssStyle(canvasRef);
+  const { glyphHeight, strokeWidth, color } = useCssStyle(canvasRef);
 
   const glyphScale = glyphHeight / GLYPH_HEIGHT;
 
@@ -53,8 +53,7 @@ export function GlyphGroup({ style, children: glyphs }: GlyphGroupProps) {
 
       ctx.restore();
     }
-
-  }, [glyphs, glyphScale, height, width, glyphWidth]);
+  }, [glyphs, glyphScale, height, width, glyphWidth, color, strokeWidth]);
 
   return (
     <canvas

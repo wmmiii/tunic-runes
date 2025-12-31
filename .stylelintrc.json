@@ -1,0 +1,15 @@
+{
+  "extends": "stylelint-config-standard",
+  "plugins": ["stylelint-order"],
+  "ignoreFiles": ["dist/**", "node_modules/**", ".pnpm-store/**"],
+  "rules": {
+    "selector-class-pattern": null,
+    "custom-property-pattern": null,
+    "color-function-notation": "legacy",
+    "alpha-value-notation": "number",
+    "font-family-name-quotes": "always-unless-keyword",
+    "color-function-alias-notation": null,
+    "no-descending-specificity": null,
+    "order/properties-alphabetical-order": true
+  }
+}

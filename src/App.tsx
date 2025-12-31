@@ -50,7 +50,7 @@ function App() {
   }, []);
 
   const handleAddGlyph = () => {
-    setGlyphSequence(prev => [...prev, currentGlyph]);
+    setGlyphSequence((prev) => [...prev, currentGlyph]);
     setCurrentGlyph(0);
   };
 
@@ -73,11 +73,7 @@ function App() {
           </p>
           <p className={styles.attribution}>
             Inspired by the game{' '}
-            <a
-              href="https://tunicgame.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://tunicgame.com/" target="_blank" rel="noopener noreferrer">
               Tunic
             </a>
           </p>
@@ -93,15 +89,19 @@ function App() {
         </button>
         <div className={styles.editor}>
           <GlyphEditor glyph={currentGlyph} setGlyph={setCurrentGlyph} />
-          <button onClick={handleAddGlyph} disabled={currentGlyph === SPACE && (glyphSequence.length === 0 || glyphSequence[glyphSequence.length - 1] === SPACE)}>
+          <button
+            onClick={handleAddGlyph}
+            disabled={
+              currentGlyph === SPACE &&
+              (glyphSequence.length === 0 || glyphSequence[glyphSequence.length - 1] === SPACE)
+            }
+          >
             Add {currentGlyph === SPACE ? 'space' : 'rune'}
           </button>
         </div>
         <div ref={sequenceContainerRef} className={styles.sequenceContainer}>
           {sequenceWidth > 0 && (
-            <GlyphSequence previewGlyph={currentGlyph}>
-              {glyphSequence}
-            </GlyphSequence>
+            <GlyphSequence previewGlyph={currentGlyph}>{glyphSequence}</GlyphSequence>
           )}
         </div>
       </main>

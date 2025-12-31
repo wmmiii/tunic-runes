@@ -1,5 +1,5 @@
-import { RefObject, useEffect, useState } from "react";
-import { GLYPH_HEIGHT } from "./glyph";
+import { RefObject, useEffect, useState } from 'react';
+import { GLYPH_HEIGHT } from './glyph';
 
 interface CssStyle {
   glyphHeight: number;

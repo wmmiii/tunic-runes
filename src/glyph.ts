@@ -36,7 +36,7 @@ export const BB: Point = { x: 128, y: BC.y + TC.y - TT.y };
 // Dot
 export const DOT_RADIUS = 28;
 export const DOT: Point = { x: 128, y: BB.y + DOT_RADIUS };
-export const DOT_TARGET: Point = {x: 128, y: BB.y + HIT_RADIUS * 2};
+export const DOT_TARGET: Point = { x: 128, y: BB.y + HIT_RADIUS * 2 };
 
 // Glyph dimensions
 export const GLYPH_WIDTH = 256;
@@ -70,7 +70,11 @@ export function hitTarget(x: number, y: number): Point | null {
     return TL;
   } else if ((x - DOT_TARGET.x) ** 2 + (y - DOT_TARGET.y) ** 2 < DOT_HIT_RADIUS ** 2) {
     return DOT;
-  } else if (hit(x, y, TC) || hit(x, y, BC) || (Math.abs(x - 128) < HIT_RADIUS && y > TC.y && y < BC.y)) {
+  } else if (
+    hit(x, y, TC) ||
+    hit(x, y, BC) ||
+    (Math.abs(x - 128) < HIT_RADIUS && y > TC.y && y < BC.y)
+  ) {
     return CC;
   }
   return null;
@@ -87,7 +91,7 @@ export function encodedLine(a: Point, b: Point) {
 
   // Helper to check if two points match in either direction
   const matches = (p1: Point, p2: Point, line: Point[]): boolean => {
-    return (line.includes(p1) && line.includes(p2));
+    return line.includes(p1) && line.includes(p2);
   };
 
   // Map to strokeGlyph bit positions

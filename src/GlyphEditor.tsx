@@ -21,7 +21,10 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
 
   const scale = 0.5;
 
-  const getCanvasCoordinates = (clientX: number, clientY: number): { x: number; y: number } | null => {
+  const getCanvasCoordinates = (
+    clientX: number,
+    clientY: number
+  ): { x: number; y: number } | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
 
@@ -77,7 +80,7 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
     }
 
     if (lastTarget != null && target != null && lastTarget !== target) {
-      setGlyph(prev => prev ^ encodedLine(target, lastTarget));
+      setGlyph((prev) => prev ^ encodedLine(target, lastTarget));
     }
     if (mouseDown && target != null) {
       setLastTarget(target);
@@ -92,7 +95,7 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
 
     // Handle DOT target
     if (target === DOT) {
-      setGlyph(prev => prev ^ (2 ** 5));
+      setGlyph((prev) => prev ^ (2 ** 5));
     }
 
     setMouseDown(true);
@@ -110,10 +113,10 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
       className={styles.canvas}
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
-      style={{ 
+      style={{
         cursor: mouseDown || hovering ? 'crosshair' : undefined,
         width: `${CANVAS_WIDTH}px`,
-        height: `${CANVAS_HEIGHT}px`
+        height: `${CANVAS_HEIGHT}px`,
       }}
       onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
       onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
