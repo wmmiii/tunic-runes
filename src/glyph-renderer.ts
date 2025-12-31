@@ -171,3 +171,111 @@ function strokeGuide(ctx: CanvasRenderingContext2D) {
   ctx.moveTo(CL.x, CL.y);
   ctx.lineTo(CR.x, CR.y);
 }
+
+// SVG Generation Functions
+
+interface PathSegment {
+  type: 'line' | 'arc';
+  points: Point[];
+  arcParams?: {
+    rx: number;
+    ry: number;
+    xRotation: number;
+    largeArc: number;
+    sweep: number;
+  };
+}
+
+export function glyphToPathSegments(glyph: Glyph): PathSegment[] {
+  const segments: PathSegment[] = [];
+
+  // Add glyph strokes
+  if (glyph & (2 ** 0)) {
+    segments.push({ type: 'line', points: OBR });
+  }
+  if (glyph & (2 ** 1)) {
+    segments.push({ type: 'line', points: OBL });
+  }
+  if (glyph & (2 ** 2)) {
+    segments.push({ type: 'line', points: OL });
+  }
+  if (glyph & (2 ** 3)) {
+    segments.push({ type: 'line', points: OTL });
+  }
+  if (glyph & (2 ** 4)) {
+    segments.push({ type: 'line', points: OTR });
+  }
+
+  if (glyph & (2 ** 5)) {
+    segments.push({
+      type: 'arc',
+      points: [
+        { x: DOT.x + DOT_RADIUS, y: DOT.y },
+        { x: DOT.x - DOT_RADIUS, y: DOT.y },
+        { x: DOT.x + DOT_RADIUS, y: DOT.y },
+      ],
+      arcParams: {
+        rx: DOT_RADIUS,
+        ry: DOT_RADIUS,
+        xRotation: 0,
+        largeArc: 1,
+        sweep: 0,
+      },
+    });
+  }
+
+  if (glyph & (2 ** 6)) {
+    segments.push({ type: 'line', points: IT });
+  }
+  if (glyph & (2 ** 7)) {
+    segments.push({ type: 'line', points: ITR });
+  }
+  if (glyph & (2 ** 8)) {
+    segments.push({ type: 'line', points: IBR });
+  }
+  if (glyph & (2 ** 9)) {
+    segments.push({ type: 'line', points: IB });
+  }
+  if (glyph & (2 ** 10)) {
+    segments.push({ type: 'line', points: IBL });
+  }
+  if (glyph & (2 ** 11)) {
+    segments.push({ type: 'line', points: ITL });
+  }
+
+  // Add guide line
+  segments.push({ type: 'line', points: [CL, CR] });
+
+  return segments;
+}
+
+export function glyphToPathData(glyph: Glyph): string {
+  const segments = glyphToPathSegments(glyph);
+  return pathSegmentsToString(segments);
+}
+
+export function pathSegmentsToString(segments: PathSegment[], offsetX = 0, offsetY = 0): string {
+  const commands: string[] = [];
+
+  for (const segment of segments) {
+    if (segment.type === 'line') {
+      for (let i = 0; i < segment.points.length; i += 2) {
+        const p1 = segment.points[i];
+        const p2 = segment.points[i + 1];
+        commands.push(
+          `M ${p1.x + offsetX},${p1.y + offsetY} L ${p2.x + offsetX},${p2.y + offsetY}`
+        );
+      }
+    } else if (segment.type === 'arc' && segment.arcParams) {
+      const [start, mid, end] = segment.points;
+      const { rx, ry, xRotation, largeArc, sweep } = segment.arcParams;
+      commands.push(
+        `M ${start.x + offsetX},${start.y + offsetY} ` +
+          `A ${rx},${ry} ${xRotation} ${largeArc},${sweep} ${mid.x + offsetX},${mid.y + offsetY} ` +
+          `A ${rx},${ry} ${xRotation} ${largeArc},${sweep} ${end.x + offsetX},${end.y + offsetY}`
+      );
+    }
+  }
+
+  return commands.join(' ');
+}

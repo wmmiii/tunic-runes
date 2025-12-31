@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { Glyph, GLYPH_HEIGHT } from './glyph';
-import { strokeGlyph } from './glyph-renderer';
+import { useMemo, useRef } from 'react';
+import { Glyph, GLYPH_HEIGHT, GLYPH_WIDTH } from './glyph';
+import { glyphToPathSegments, pathSegmentsToString } from './glyph-renderer';
 import styles from './GlyphGroup.module.css';
 import { useCssStyle } from './browserUtils';
 
@@ -10,58 +10,48 @@ interface GlyphGroupProps {
 }
 
 export function GlyphGroup({ style, children: glyphs }: GlyphGroupProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { glyphHeight, strokeWidth, color } = useCssStyle(canvasRef);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { glyphHeight, strokeWidth } = useCssStyle(containerRef);
 
   const glyphScale = glyphHeight / GLYPH_HEIGHT;
 
-  const glyphWidth = 256 * glyphScale;
-  const width = glyphs.length * glyphWidth + strokeWidth;
-  const height = glyphHeight + strokeWidth;
+  // Generate SVG combining all glyphs into a single path
+  const svgContent = useMemo(() => {
+    // Add a small gap between glyphs to prevent stroke overlap
+    // The gap needs to be at least the stroke width to avoid overlap
+    const glyphSpacing = GLYPH_WIDTH + strokeWidth / glyphScale;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Collect all path segments from all glyphs with proper offsets
+    const allPathData = glyphs.map((glyph, index) => {
+      const x = index * glyphSpacing;
+      const segments = glyphToPathSegments(glyph);
+      return pathSegmentsToString(segments, x, 0);
+    });
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      throw new Error('Could not get canvas context');
-    }
+    // Combine all paths into a single path data string
+    const combinedPathData = allPathData.join(' ');
 
-    ctx.reset();
-    ctx.clearRect(0, 0, width, height);
+    // Calculate dimensions
+    const padding = strokeWidth / 2;
 
-    // Set line properties for the glyphs
-    ctx.strokeStyle = color;
-    ctx.lineWidth = strokeWidth / glyphScale;
-    ctx.lineCap = 'round';
+    // Pixel dimensions for the SVG element
+    const totalWidth =
+      (glyphs.length * glyphSpacing - strokeWidth / glyphScale) * glyphScale + strokeWidth;
+    const totalHeight = glyphHeight + strokeWidth;
 
-    // Render glyphs from left to right, left justified
-    for (let i = 0; i < glyphs.length; i++) {
-      ctx.save();
+    // ViewBox in unscaled glyph coordinates
+    const viewBoxX = -padding / glyphScale;
+    const viewBoxY = -padding / glyphScale;
+    const viewBoxWidth =
+      glyphs.length * glyphSpacing - strokeWidth / glyphScale + strokeWidth / glyphScale;
+    const viewBoxHeight = GLYPH_HEIGHT + strokeWidth / glyphScale;
 
-      const x = i * glyphWidth + strokeWidth / 2;
-      const y = strokeWidth / 2;
+    return `<svg xmlns="http://www.w3.org/2000/svg" class="${styles.group}" width="${totalWidth}" height="${totalHeight}" viewBox="${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}">
+  <g stroke="currentColor" stroke-width="${strokeWidth / glyphScale}" stroke-linecap="round" fill="none">
+    <path d="${combinedPathData}" />
+  </g>
+</svg>`;
+  }, [glyphs, glyphScale, strokeWidth, glyphHeight]);
 
-      ctx.translate(x, y);
-      ctx.scale(glyphScale, glyphScale);
-
-      ctx.beginPath();
-      strokeGlyph(ctx, glyphs[i]);
-      ctx.stroke();
-      ctx.closePath();
-
-      ctx.restore();
-    }
-  }, [glyphs, glyphScale, height, width, glyphWidth, color, strokeWidth]);
-
-  return (
-    <canvas
-      className={styles.group}
-      ref={canvasRef}
-      width={width}
-      height={height}
-      style={Object.assign({ width: `${width}px`, height: `${height}px` }, style)}
-    />
-  );
+  return <div ref={containerRef} dangerouslySetInnerHTML={{ __html: svgContent }} style={style} />;
 }

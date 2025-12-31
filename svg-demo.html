@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Glyph Renderer Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .demo-section {
+      margin: 2rem 0;
+      padding: 2rem;
+      background: #2a2a2a;
+      border-radius: 8px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .svg-container {
+      display: inline-block;
+      margin: 1rem;
+      padding: 1rem;
+      background: transparent;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+
+    .code-block {
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    pre {
+      margin: 0;
+    }
+
+    code {
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #4af;
+    }
+
+    .glyphs-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>SVG Glyph Renderer Prototype</h1>
+
+  <div class="demo-section">
+    <h2>Sample Glyphs</h2>
+    <p>Various glyph combinations rendered as SVG:</p>
+    <div class="glyphs-row" id="glyphs-container"></div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Usage Example</h2>
+    <div class="code-block">
+      <pre><code>// Import the functions
+import { glyphToSVG, templateToSVG } from './glyph-renderer';
+
+// Generate a glyph SVG
+const svgString = glyphToSVG(0b111111, {
+  strokeWidth: 24,
+  strokeColor: '#000000'
+});
+
+// Inject into DOM
+document.getElementById('container').innerHTML = svgString;
+
+// Or use as img src with data URI
+const dataUri = 'data:image/svg+xml,' + encodeURIComponent(svgString);
+img.src = dataUri;</code></pre>
+    </div>
+  </div>
+
+  <script type="module">
+    import { glyphToSVG } from './src/glyph-renderer.ts';
+
+    // Show various glyphs
+    const glyphsContainer = document.getElementById('glyphs-container');
+
+    // Sample glyph values
+    const sampleGlyphs = [
+      0b000001,      // OBR only
+      0b000010,      // OBL only
+      0b000100,      // OL only
+      0b111111,      // All outer lines + dot
+      0b1111111111,  // All inner lines
+      0b111111111111, // All lines
+      0b100000,      // Dot only
+      0b10011000000, // Some inner lines
+    ];
+
+    sampleGlyphs.forEach((glyph, index) => {
+      const container = document.createElement('div');
+      container.className = 'svg-container';
+      const svg = glyphToSVG(glyph, {
+        strokeWidth: 24,
+        strokeColor: '#000000'
+      });
+      if (index === 0) {
+        console.log('Sample SVG (first glyph):');
+        console.log(svg);
+      }
+      container.innerHTML = svg;
+      glyphsContainer.appendChild(container);
+    });
+  </script>
+</body>
+</html>
