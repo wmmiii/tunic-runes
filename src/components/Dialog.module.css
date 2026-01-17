@@ -1,0 +1,107 @@
+.backdrop {
+  backdrop-filter: blur(5px);
+  background-color: transparent;
+  inset: 0;
+  min-height: 100dvh;
+  position: fixed;
+  transition: opacity 150ms cubic-bezier(0.45, 1.005, 0, 1.005);
+
+  /* iOS 26+: Ensure the backdrop covers the entire visible viewport. */
+  @supports (-webkit-touch-callout: none) {
+    position: absolute;
+  }
+}
+
+.popup {
+  background-color: var(--col-dialog-bg);
+  border-radius: 32px;
+  box-shadow: 0 20px 50px #000;
+  box-sizing: border-box;
+  color: var(--col-dialog);
+  font-size: 42px;
+  left: 50%;
+  max-width: calc(100vw - 3rem);
+  min-width: 1130px;
+  outline: var(--dim-dialog-outline-width) solid var(--col-dialog-outline);
+  padding: 88px;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -75%);
+  transition: all 150ms;
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  &::before {
+    border: var(--dim-dialog-outline-width) solid var(--col-dialog-outline);
+    border-bottom: none;
+    border-radius: 16px 16px 0 0;
+    content: '';
+    height: 44px;
+    left: calc(var(--dim-dialog-outline-width) * 2);
+    position: absolute;
+    right: calc(var(--dim-dialog-outline-width) * 2);
+    top: calc(var(--dim-dialog-outline-width) * 2);
+    user-select: none;
+  }
+
+  &::after {
+    border: var(--dim-dialog-outline-width) solid var(--col-dialog-outline);
+    border-radius: 0 0 16px 16px;
+    border-top: none;
+    bottom: calc(var(--dim-dialog-outline-width) * 2);
+    content: '';
+    height: 44px;
+    left: calc(var(--dim-dialog-outline-width) * 2);
+    position: absolute;
+    right: calc(var(--dim-dialog-outline-width) * 2);
+    user-select: none;
+  }
+}
+
+.description {
+  margin-bottom: 81px;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.button {
+  align-items: center;
+  background: #000 !important;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: var(--color-dialog);
+  display: flex;
+  font-family: inherit;
+  font-size: 30px;
+  height: 56px;
+  justify-content: center;
+  margin: 0;
+  outline: 0;
+  overflow: visible;
+  padding: 0 0.875rem;
+  transform: unset !important;
+  user-select: none;
+  width: 318px;
+
+  &::after {
+    background: linear-gradient(90deg, #fff 0%, #000 50%, #fff 100%) !important;
+    inset: -4px;
+    content: '';
+    position: absolute;
+    z-index: -1;
+  }
+
+  &:hover::after,
+  &:active::after,
+  &:focus::after {
+    background: #eaa615 !important;
+  }
+}
