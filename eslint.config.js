@@ -60,6 +60,9 @@ export default [
 
       // General
       'no-console': 'off',
+
+      // Browser types
+      'no-undef': 'off',
     },
     settings: {
       react: {

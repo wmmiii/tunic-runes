@@ -111,3 +111,95 @@ export function encodedLine(a: Point, b: Point) {
   // Points are not adjacent
   return 0;
 }
+
+const VALID_OUTER = [28, 12, 3, 7, 6, 24, 15, 30, 23, 29, 27, 13, 8, 16, 2, 1, 31, 5];
+const VALID_INNER = [
+  1280, 3328, 4032, 640, 320, 2688, 1344, 448, 896, 1088, 2560, 1664, 2368, 2752, 1856, 1728, 2880,
+  3968, 3520, 832, 704, 2624, 2176, 576,
+];
+
+const OUTER_MASK = 0b11111; // bits 0–4
+const INNER_MASK = 0b111111000000; // bits 6–11
+const DOT_BIT = 2 ** 5;
+
+/** Extract the outer stroke component of a glyph. */
+export function glyphOuter(glyph: Glyph): number {
+  return glyph & OUTER_MASK;
+}
+
+/** Extract the inner stroke component of a glyph. */
+export function glyphInner(glyph: Glyph): number {
+  return glyph & INNER_MASK;
+}
+
+/** Check whether a glyph's outer strokes form a valid pattern (or are absent). */
+export function hasValidOuter(glyph: Glyph): boolean {
+  const outer = glyphOuter(glyph);
+  return outer === 0 || VALID_OUTER.includes(outer);
+}
+
+/** Check whether a glyph's inner strokes form a valid pattern (or are absent). */
+export function hasValidInner(glyph: Glyph): boolean {
+  const inner = glyphInner(glyph);
+  return inner === 0 || VALID_INNER.includes(inner);
+}
+
+/** A glyph is valid if it has at least one valid outer or inner component and both components are valid. */
+export function isValidGlyph(glyph: Glyph): boolean {
+  const outer = glyphOuter(glyph);
+  const inner = glyphInner(glyph);
+  // Must have at least one stroke component (dot alone is not valid)
+  if (outer === 0 && inner === 0) return false;
+  return hasValidOuter(glyph) && hasValidInner(glyph);
+}
+
+/** Check whether all glyphs in a group are valid. */
+export function isValidGlyphGroup(glyphs: Glyph[]): boolean {
+  return glyphs.every(isValidGlyph);
+}
+
+/**
+ * Compare two individual glyphs for sorting.
+ *
+ * Order: absent strokes (0) < valid glyphs (by outer index, then inner index, then dot) < invalid glyphs (by numeric value).
+ */
+export function compareGlyphs(a: Glyph, b: Glyph): number {
+  const aValid = isValidGlyph(a);
+  const bValid = isValidGlyph(b);
+
+  // Invalid glyphs are always "greater than" valid ones
+  if (aValid && !bValid) return -1;
+  if (!aValid && bValid) return 1;
+  if (!aValid && !bValid) return a - b;
+
+  // Both valid — compare outer first
+  const aOuter = glyphOuter(a);
+  const bOuter = glyphOuter(b);
+  const aOuterIdx = aOuter === 0 ? -1 : VALID_OUTER.indexOf(aOuter);
+  const bOuterIdx = bOuter === 0 ? -1 : VALID_OUTER.indexOf(bOuter);
+  if (aOuterIdx !== bOuterIdx) return aOuterIdx - bOuterIdx;
+
+  // Then compare inner
+  const aInner = glyphInner(a);
+  const bInner = glyphInner(b);
+  const aInnerIdx = aInner === 0 ? -1 : VALID_INNER.indexOf(aInner);
+  const bInnerIdx = bInner === 0 ? -1 : VALID_INNER.indexOf(bInner);
+  if (aInnerIdx !== bInnerIdx) return aInnerIdx - bInnerIdx;
+
+  // Finally compare dot
+  const aDot = a & DOT_BIT;
+  const bDot = b & DOT_BIT;
+  return aDot - bDot;
+}
+
+/**
+ * Compare two glyph groups for sorting (like comparing strings letter-by-letter).
+ */
+export function compareGlyphGroups(a: Glyph[], b: Glyph[]): number {
+  const minLen = Math.min(a.length, b.length);
+  for (let i = 0; i < minLen; i++) {
+    const cmp = compareGlyphs(a[i], b[i]);
+    if (cmp !== 0) return cmp;
+  }
+  return a.length - b.length;
+}

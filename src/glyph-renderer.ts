@@ -29,48 +29,76 @@ import {
   DOT_TARGET,
   DOT_HIT_RADIUS,
   DOT_RADIUS,
+  hasValidOuter,
+  hasValidInner,
+  glyphOuter,
+  glyphInner,
 } from './glyph';
 
 export function strokeGlyph(ctx: CanvasRenderingContext2D, glyph: Glyph) {
-  if (glyph & (2 ** 0)) {
-    strokeLine(ctx, OBR);
-  }
-  if (glyph & (2 ** 1)) {
-    strokeLine(ctx, OBL);
-  }
-  if (glyph & (2 ** 2)) {
-    strokeLine(ctx, OL);
-  }
-  if (glyph & (2 ** 3)) {
-    strokeLine(ctx, OTL);
-  }
-  if (glyph & (2 ** 4)) {
-    strokeLine(ctx, OTR);
-  }
-
+  strokeOuterStrokes(ctx, glyph);
   if (glyph & (2 ** 5)) {
     strokeDot(ctx);
   }
-
-  if (glyph & (2 ** 6)) {
-    strokeLine(ctx, IT);
-  }
-  if (glyph & (2 ** 7)) {
-    strokeLine(ctx, ITR);
-  }
-  if (glyph & (2 ** 8)) {
-    strokeLine(ctx, IBR);
-  }
-  if (glyph & (2 ** 9)) {
-    strokeLine(ctx, IB);
-  }
-  if (glyph & (2 ** 10)) {
-    strokeLine(ctx, IBL);
-  }
-  if (glyph & (2 ** 11)) {
-    strokeLine(ctx, ITL);
-  }
+  strokeInnerStrokes(ctx, glyph);
   strokeGuide(ctx);
+}
+
+/**
+ * Stroke a glyph with invalid components drawn in a warning color.
+ * Valid strokes use the current strokeStyle; invalid ones use warningColor.
+ */
+export function strokeGlyphWithValidation(
+  ctx: CanvasRenderingContext2D,
+  glyph: Glyph,
+  warningColor: string
+) {
+  const baseColor = ctx.strokeStyle;
+  const outerValid = glyphOuter(glyph) === 0 || hasValidOuter(glyph);
+  const innerValid = glyphInner(glyph) === 0 || hasValidInner(glyph);
+
+  // Outer strokes
+  ctx.strokeStyle = outerValid ? baseColor : warningColor;
+  ctx.beginPath();
+  strokeOuterStrokes(ctx, glyph);
+  ctx.stroke();
+
+  // Dot (always normal color)
+  ctx.strokeStyle = baseColor as string;
+  if (glyph & (2 ** 5)) {
+    ctx.beginPath();
+    strokeDot(ctx);
+    ctx.stroke();
+  }
+
+  // Inner strokes
+  ctx.strokeStyle = innerValid ? baseColor : warningColor;
+  ctx.beginPath();
+  strokeInnerStrokes(ctx, glyph);
+  ctx.stroke();
+
+  // Guide (always normal color)
+  ctx.strokeStyle = baseColor as string;
+  ctx.beginPath();
+  strokeGuide(ctx);
+  ctx.stroke();
+}
+
+function strokeOuterStrokes(ctx: CanvasRenderingContext2D, glyph: Glyph) {
+  if (glyph & (2 ** 0)) strokeLine(ctx, OBR);
+  if (glyph & (2 ** 1)) strokeLine(ctx, OBL);
+  if (glyph & (2 ** 2)) strokeLine(ctx, OL);
+  if (glyph & (2 ** 3)) strokeLine(ctx, OTL);
+  if (glyph & (2 ** 4)) strokeLine(ctx, OTR);
+}
+
+function strokeInnerStrokes(ctx: CanvasRenderingContext2D, glyph: Glyph) {
+  if (glyph & (2 ** 6)) strokeLine(ctx, IT);
+  if (glyph & (2 ** 7)) strokeLine(ctx, ITR);
+  if (glyph & (2 ** 8)) strokeLine(ctx, IBR);
+  if (glyph & (2 ** 9)) strokeLine(ctx, IB);
+  if (glyph & (2 ** 10)) strokeLine(ctx, IBL);
+  if (glyph & (2 ** 11)) strokeLine(ctx, ITL);
 }
 
 export function drawTemplate(ctx: CanvasRenderingContext2D) {

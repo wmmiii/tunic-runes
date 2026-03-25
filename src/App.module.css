@@ -10,8 +10,15 @@ header {
   background: linear-gradient(180deg, var(--color-bg-header) 0%, var(--color-bg-primary) 100%);
   border-bottom: 2px solid var(--color-border-primary);
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.headerLeft {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-md);
 }
 
 .headerLeft h1 {
@@ -35,6 +42,12 @@ header {
   margin: 0;
 }
 
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
 .content {
   display: flex;
   flex: 1;
@@ -43,7 +56,9 @@ header {
   position: relative;
 }
 
-.clearButton {
+.topButtons {
+  display: flex;
+  gap: var(--spacing-sm);
   left: var(--spacing-md);
   position: absolute;
   top: var(--spacing-md);
@@ -57,6 +72,17 @@ header {
   flex-direction: column;
   gap: var(--spacing-md);
   justify-content: center;
+}
+
+.spoilerSelect {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .sequenceContainer {

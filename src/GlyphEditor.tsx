@@ -1,18 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { encodedLine, Glyph, hitTarget, Point, DOT } from './glyph';
-import { drawTemplate, highlightTarget, strokeGlyph } from './glyph-renderer';
+import {
+  drawTemplate,
+  highlightTarget,
+  strokeGlyph,
+  strokeGlyphWithValidation,
+} from './glyph-renderer';
+import { SpoilerLevel } from './spoilers';
 import styles from './GlyphEditor.module.css';
 import { getCSSVar } from './browserUtils';
 
 interface GlyphEditorProps {
   glyph: Glyph;
   setGlyph: (compute: (glyph: Glyph) => Glyph) => void;
+  spoilerLevel: SpoilerLevel;
 }
 
 const CANVAS_WIDTH = 256;
 const CANVAS_HEIGHT = 370;
 
-export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
+export function GlyphEditor({ glyph, setGlyph, spoilerLevel }: GlyphEditorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [highlightedTarget, setHighlightedTarget] = useState<Point | null>(null);
   const [lastTarget, setLastTarget] = useState<Point | null>(null);
@@ -54,10 +61,17 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
 
     ctx.lineWidth = editorLineWidth;
     ctx.strokeStyle = glyphActive;
-    ctx.beginPath();
-    strokeGlyph(ctx, glyph);
-    ctx.stroke();
-    ctx.closePath();
+    ctx.lineCap = 'round';
+
+    if (spoilerLevel >= SpoilerLevel.PAGE_54) {
+      const glyphWarning = getCSSVar('--color-glyph-warning');
+      strokeGlyphWithValidation(ctx, glyph, glyphWarning);
+    } else {
+      ctx.beginPath();
+      strokeGlyph(ctx, glyph);
+      ctx.stroke();
+      ctx.closePath();
+    }
 
     if (highlightedTarget) {
       highlightTarget(ctx, highlightedTarget);
@@ -65,7 +79,7 @@ export function GlyphEditor({ glyph, setGlyph }: GlyphEditorProps) {
     if (lastTarget) {
       highlightTarget(ctx, lastTarget);
     }
-  }, [glyph, highlightedTarget, lastTarget]);
+  }, [glyph, highlightedTarget, lastTarget, spoilerLevel]);
 
   const handleMove = (clientX: number, clientY: number) => {
     const coords = getCanvasCoordinates(clientX, clientY);

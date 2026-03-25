@@ -1,15 +1,24 @@
 import { useRef } from 'react';
 import { SPACE, Glyph, GLYPH_HEIGHT, GLYPH_WIDTH } from './glyph';
 import { GlyphGroup } from './GlyphGroup';
+import { TranslatedGlyphGroup } from './TranslatedGlyphGroup';
+import { GlyphDictionary, glyphGroupKey } from './dictionary';
 import styles from './GlyphSequence.module.css';
 import { useCssStyle } from './browserUtils';
 
 interface GlyphSequenceProps {
   children: Glyph[];
   previewGlyph?: Glyph;
+  dictionary?: GlyphDictionary;
+  onUpdateTranslation?: (key: string, translations: string[]) => void;
 }
 
-export function GlyphSequence({ children, previewGlyph }: GlyphSequenceProps) {
+export function GlyphSequence({
+  children,
+  previewGlyph,
+  dictionary,
+  onUpdateTranslation,
+}: GlyphSequenceProps) {
   let sequenceRef = useRef<HTMLDivElement>(null);
   const { glyphHeight, strokeWidth } = useCssStyle(sequenceRef);
 
@@ -37,9 +46,23 @@ export function GlyphSequence({ children, previewGlyph }: GlyphSequenceProps) {
 
   return (
     <div ref={sequenceRef} className={styles.container} style={{ gap: spaceWidth }}>
-      {glyphGroups.map((group, index) => (
-        <GlyphGroup key={index}>{group}</GlyphGroup>
-      ))}
+      {glyphGroups.map((group, index) => {
+        const key = glyphGroupKey(group);
+        const translations = dictionary?.[key] ?? [];
+
+        if (dictionary && onUpdateTranslation) {
+          return (
+            <TranslatedGlyphGroup
+              key={index}
+              glyphs={group}
+              translations={translations}
+              onUpdateTranslations={(t) => onUpdateTranslation(key, t)}
+            />
+          );
+        }
+
+        return <GlyphGroup key={index}>{group}</GlyphGroup>;
+      })}
       {previewGlyph != null && (
         <GlyphGroup
           style={{
