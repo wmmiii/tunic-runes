@@ -1,0 +1,48 @@
+.wrapper {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.displayName {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.indicator {
+  font-size: 0.9rem;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+  color: var(--color-text-secondary);
+  display: inline-block;
+}
+
+.synced {
+  color: #5a9e6f;
+}
+
+.error {
+  color: var(--color-glyph-warning);
+}
+
+.signInButton {
+  font-size: 0.85rem;
+  padding: 0.4rem var(--spacing-md);
+}
+
+.signOutButton {
+  font-size: 0.8rem;
+  padding: 0.3rem var(--spacing-sm);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

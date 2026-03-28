@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { User } from 'firebase/auth';
 import { GlyphEditor } from './GlyphEditor';
 import { Glyph, SPACE } from './glyph';
 import { GlyphDictionary, glyphGroupKey, loadDictionary, saveDictionary } from './dictionary';
@@ -6,6 +7,14 @@ import { SpoilerLevel } from './spoilers';
 import styles from './App.module.css';
 import { GlyphSequence } from './GlyphSequence';
 import { Dictionary } from './DictionarySidebar';
+import { SyncStatus, SyncState } from './SyncStatus';
+import {
+  subscribeToAuthChanges,
+  signInWithGoogle,
+  signOut,
+  loadUserData,
+  saveUserData,
+} from './firebase';
 
 const STORAGE_KEY = 'tunic-runes-sequence';
 const SPOILER_STORAGE_KEY = 'tunic-runes-spoiler-level';
@@ -15,7 +24,6 @@ function App() {
   const [sequenceWidth, setSequenceWidth] = useState(0);
   const [currentGlyph, setCurrentGlyph] = useState<Glyph>(0);
   const [glyphSequence, setGlyphSequence] = useState<Glyph[]>(() => {
-    // Load sequence from localStorage on initial load
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -46,6 +54,73 @@ function App() {
     }
     return SpoilerLevel.NONE;
   });
+
+  const [user, setUser] = useState<User | null>(null);
+  const [syncState, setSyncState] = useState<SyncState>('idle');
+  // Tracks whether we've done the initial load from Firestore after sign-in
+  const initialSyncDone = useRef(false);
+  const saveDebounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Subscribe to Firebase auth state changes
+  useEffect(() => {
+    return subscribeToAuthChanges((nextUser) => {
+      setUser(nextUser);
+      if (!nextUser) {
+        initialSyncDone.current = false;
+      }
+    });
+  }, []);
+
+  // When user signs in, load their data from Firestore
+  useEffect(() => {
+    if (!user || initialSyncDone.current) return;
+
+    setSyncState('syncing');
+    loadUserData(user.uid)
+      .then((data) => {
+        if (data) {
+          setGlyphSequence(data.sequence);
+          setDictionary(data.dictionary);
+          setSpoilerLevel(data.spoilerLevel);
+        } else {
+          // No cloud data yet — push current local data up
+          return saveUserData(user.uid, {
+            sequence: glyphSequence,
+            dictionary,
+            spoilerLevel,
+          });
+        }
+      })
+      .then(() => {
+        initialSyncDone.current = true;
+        setSyncState('synced');
+      })
+      .catch((err) => {
+        console.error('Failed to sync from Firestore:', err);
+        setSyncState('error');
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  // Debounced save to Firestore whenever data changes (only when signed in)
+  useEffect(() => {
+    if (!user || !initialSyncDone.current) return;
+
+    if (saveDebounceTimer.current) clearTimeout(saveDebounceTimer.current);
+    setSyncState('syncing');
+    saveDebounceTimer.current = setTimeout(() => {
+      saveUserData(user.uid, { sequence: glyphSequence, dictionary, spoilerLevel })
+        .then(() => setSyncState('synced'))
+        .catch((err) => {
+          console.error('Failed to save to Firestore:', err);
+          setSyncState('error');
+        });
+    }, 1000);
+
+    return () => {
+      if (saveDebounceTimer.current) clearTimeout(saveDebounceTimer.current);
+    };
+  }, [user, glyphSequence, dictionary, spoilerLevel]);
 
   // Save sequence to localStorage whenever it changes
   useEffect(() => {
@@ -87,6 +162,22 @@ function App() {
     setCurrentGlyph(0);
   };
 
+  const handleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      console.error('Sign-in failed:', err);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (err) {
+      console.error('Sign-out failed:', err);
+    }
+  };
+
   // Extract sequence groups for the sidebar's "in sequence" matching
   const sequenceGroups: Glyph[][] = [];
   {
@@ -110,8 +201,6 @@ function App() {
     setDictionary((prev) => {
       const next = { ...prev };
       if (translations.length === 0) {
-        // Keep the entry but with empty translations (user cleared it)
-        // The entry persists so it still shows in the dictionary
         next[key] = [];
       } else {
         next[key] = translations;
@@ -129,9 +218,6 @@ function App() {
   }, []);
 
   // Ensure every completed sequence group has a dictionary entry.
-  // A group is "complete" only if it's followed by a SPACE (or the sequence is empty after it).
-  // The last group is still being built if the sequence doesn't end with a SPACE,
-  // so we skip it to avoid registering partial groups like [1], [1,2], [1,2,3] while typing.
   useEffect(() => {
     const lastGlyph = glyphSequence[glyphSequence.length - 1];
     const allGroupsComplete = glyphSequence.length === 0 || lastGlyph === SPACE;
@@ -149,7 +235,6 @@ function App() {
     if (needsUpdate) {
       setDictionary((prev) => ({ ...prev, ...additions }));
     }
-    // We only want this to run when the sequence groups actually change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [glyphSequence]);
 
@@ -168,6 +253,12 @@ function App() {
           </select>
         </div>
         <div className={styles.headerRight}>
+          <SyncStatus
+            user={user}
+            syncState={syncState}
+            onSignIn={handleSignIn}
+            onSignOut={handleSignOut}
+          />
           <p className={styles.madeWith}>
             Made with ❤️ by{' '}
             <a
